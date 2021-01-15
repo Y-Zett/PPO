@@ -117,14 +117,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
                 popupMenu.show();
             }
         });
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Toast.makeText(mContext, "Pushed", Toast.LENGTH_LONG).show();
-//                if(bitmap != null)
-//                    holder.imageView.setImageBitmap(bitmap);
-            }
-        });
     }
     public void setListItems(List<RecyclerItem> listItems)
     {
