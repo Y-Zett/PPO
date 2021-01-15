@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Каталог Музыки</string>
+    <string name="add_new">Описание элемента</string>
+    <string name="name_of_album">Название альбома:</string>
+    <string name="year">Год</string>
+    <string name="set_year">Введите год:</string>
+    <string name="set_label_name">Название группы:</string>
+    <string name="add">Добавить</string>
+    <string name="delete">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="addbutton">Применить</string>
+
+</resources>

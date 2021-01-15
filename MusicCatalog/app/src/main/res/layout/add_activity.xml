@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto" android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+        <EditText android:layout_width="150dp"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/editname"
+                  android:layout_below="@id/AddTitle"
+                  android:layout_marginTop="22dp"
+                  android:layout_toRightOf="@id/nametxt" android:layout_marginLeft="46dp"/>
+        <TextView
+                android:text="@string/add_new"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/AddTitle"
+                android:layout_alignParentTop="true" android:layout_marginTop="12dp"
+                android:layout_centerHorizontal="true"/>
+        <TextView
+                android:text ="@string/name_of_album"
+                android:layout_height="wrap_content"
+                android:layout_width="110dp"
+                android:layout_below="@id/AddTitle"
+                android:id="@+id/nametxt"
+                android:layout_alignParentLeft="true"
+                android:layout_alignTop="@+id/editname"
+        />
+        <TextView
+                android:text="@string/set_label_name"
+                android:layout_height="wrap_content"
+                android:layout_width="110dp"
+                android:id="@+id/labelnametxt"
+                android:layout_below="@id/nametxt"
+                android:layout_marginTop="22dp"
+                android:layout_alignParentLeft="true"
+
+
+        />
+        <EditText android:layout_width="150dp"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/editlabelname"
+                  android:layout_below="@id/nametxt"
+                  android:layout_marginTop="22dp"
+                  android:layout_toRightOf="@id/labelnametxt" android:layout_marginLeft="46dp"/>
+        <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="110dp"
+                android:id="@+id/yeartxt"
+                android:layout_below="@id/labelnametxt"
+                android:layout_marginTop="22dp"
+                android:layout_alignParentLeft="true"
+                android:text="@string/set_year"
+        />
+        <EditText android:layout_width="150dp"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/edityear"
+                  android:layout_below="@id/labelnametxt"
+                  android:layout_marginTop="22dp"
+                  android:layout_toRightOf="@id/yeartxt" android:layout_marginLeft="46dp"/>
+        <Button
+                android:text="@string/addbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/addbutton"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+</LinearLayout>

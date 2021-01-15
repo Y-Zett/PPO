@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">MusicCatalog</string>
+    <string name="add_new">Add new</string>
+    <string name="name_of_album">Name of album:</string>
+    <string name="year">Year</string>
+    <string name="set_year">Set year:</string>
+    <string name="set_label_name">Set label name:</string>
+    <string name="add">Add</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="addbutton">Add</string>
+
+</resources>
