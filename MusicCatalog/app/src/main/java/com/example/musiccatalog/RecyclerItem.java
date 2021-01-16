@@ -4,9 +4,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import java.io.Serializable;
-import java.net.URI;
 
-public class RecyclerItem implements Serializable{
+public class RecyclerItem implements Serializable {
     private String title;
     private String description;
     private String year;
@@ -20,8 +19,14 @@ public class RecyclerItem implements Serializable{
         this.year = year;
         this.img = img;
     }
-    public RecyclerItem(String title, String description, String year, Bitmap img, String uri)
-    {
+
+    public RecyclerItem(String title, String description, String year) {
+        this.year = year;
+        this.description = description;
+        this.title = title;
+    }
+
+    public RecyclerItem(String title, String description, String year, Bitmap img, String uri) {
         this.title = title;
         this.description = description;
         this.year = year;
@@ -29,12 +34,13 @@ public class RecyclerItem implements Serializable{
         this.uri = Uri.parse(uri);
         this.stringUri = uri;
     }
-    public void setData(String name, String description, String year)
-    {
+
+    public void setData(String name, String description, String year) {
         this.title = name;
         this.year = year;
         this.description = description;
     }
+
     public String getTitle() {
         return title;
     }

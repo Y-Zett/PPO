@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Delayed;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -34,6 +33,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
     Bitmap bitmap = null;
     Uri selectedImage = Uri.parse("");
     Activity origin;
+
     public ListAdapter(List<RecyclerItem> listItems, Context mContext) {
         this.listItems = listItems;
         this.mContext = mContext;
@@ -51,19 +51,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         final RecyclerItem itemList = listItems.get(position);
         holder.txtTitle.setText(itemList.getTitle());
         holder.txtDescription.setText(itemList.getDescription());
-        if(itemList.getUri() != null){
+        if (itemList.getUri() != null) {
             holder.imageView.setImageURI(itemList.getUri());
-        }
-        else {
+        } else {
             holder.imageView.setImageBitmap(itemList.getImg());
         }
         holder.txtYear.setText(itemList.getYear());
         holder.imageView.setLongClickable(true);
-        holder.imageView.setOnLongClickListener(new View.OnLongClickListener()
-        {
+        holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v)
-            {
+            public boolean onLongClick(View v) {
                 origin = (Activity) mContext;
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
@@ -98,8 +95,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
                                     listItems.remove(position);
                                     notifyDataSetChanged();
                                     Toast.makeText(mContext, "Deleted", Toast.LENGTH_LONG).show();
-                                }
-                                else
+                                } else
                                     Toast.makeText(mContext, "Add one more element before deleting", Toast.LENGTH_LONG).show();
                                 break;
                             case R.id.mnu_item_edit:
@@ -118,22 +114,22 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
             }
         });
     }
-    public void setListItems(List<RecyclerItem> listItems)
-    {
+
+    public void setListItems(List<RecyclerItem> listItems) {
         this.listItems = listItems;
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
-        switch(requestCode) {
+        switch (requestCode) {
             case GALLERY_REQUEST:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     selectedImage = returnedIntent.getData();
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), selectedImage);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    if(index != 0)
-                    {
+                    if (index != 0) {
                         listItems.get(index).setImg(bitmap);
                         listItems.get(index).setUri(selectedImage.toString());
                         listItems.get(index).setStringUri(selectedImage.toString());
@@ -142,63 +138,61 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
                 }
                 break;
             case GET_DATA_SET:
-                if(resultCode == RESULT_OK) {
-                Bundle bundle = returnedIntent.getExtras();
-                if (bundle != null && bitmap != null) {
-                    NewListItem item = (NewListItem)bundle.getSerializable("item");
-                    RecyclerItem temp;
-                    if (selectedImage!= Uri.parse("")) {
-                        temp = new RecyclerItem(item.getTitle(), item.getDescription(), item.getYear(), bitmap, selectedImage.toString());
+                if (resultCode == RESULT_OK) {
+                    Bundle bundle = returnedIntent.getExtras();
+                    if (bundle != null && bitmap != null) {
+                        RecyclerItem item = (RecyclerItem) bundle.getSerializable("item");
+                        if (selectedImage != Uri.parse("")) {
+                            item.setStringUri(selectedImage.toString());
+                            item.setUri(selectedImage.toString());
+                            item.setImg(bitmap);
+                        } else {
+                            item.setImg(bitmap);
+                        }
+                        listItems.add(item);
+                        notifyDataSetChanged();
+                        bitmap = null;
                     }
-                    else
-                    {
-                        temp = new RecyclerItem(item.getTitle(), item.getDescription(), item.getYear(), bitmap);
-                    }
-                    listItems.add(temp);
-                    notifyDataSetChanged();
-                    bitmap = null;
-                }
 
-            }
+                }
                 break;
-            case EDIT_DATA_SET:
-            {
+            case EDIT_DATA_SET: {
                 try {
                     Bundle bundle = returnedIntent.getExtras();
                     if (bundle != null) {
-                        NewListItem item = (NewListItem)bundle.getSerializable("item");
+                        RecyclerItem item = (RecyclerItem) bundle.getSerializable("item");
                         listItems.get(index).setData(item.getTitle(), item.getDescription(), item.getYear());
                         index = 0;
                         notifyDataSetChanged();
                     }
-                }
-                catch (RuntimeException ex)
-                {
+                } catch (RuntimeException ex) {
                     break;
                 }
 
             }
         }
     }
+
     @Override
     public int getItemCount() {
         return listItems.size();
     }
 
-    public class ListViewHolder extends RecyclerView.ViewHolder{
+    public class ListViewHolder extends RecyclerView.ViewHolder {
 
         public TextView txtTitle;
         public TextView txtDescription;
         public TextView txtOptionDigit;
         public TextView txtYear;
         public ImageView imageView;
+
         public ListViewHolder(View itemView) {
             super(itemView);
-            txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
-            txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
-            txtOptionDigit = (TextView) itemView.findViewById(R.id.txtOptionDigit);
-            txtYear = (TextView) itemView.findViewById(R.id.yearDigit);
-            imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            txtTitle = itemView.findViewById(R.id.txtTitle);
+            txtDescription = itemView.findViewById(R.id.txtDescription);
+            txtOptionDigit = itemView.findViewById(R.id.txtOptionDigit);
+            txtYear = itemView.findViewById(R.id.yearDigit);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 }
