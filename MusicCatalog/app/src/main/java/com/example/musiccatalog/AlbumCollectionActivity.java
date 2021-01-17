@@ -1,12 +1,16 @@
 package com.example.musiccatalog;
 
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import androidx.annotation.RequiresApi;
+
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,23 +24,47 @@ public class AlbumCollectionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ListAdapter adapter;
     private List<RecyclerItem> listItems;
+    public SQLiteDatabase database;
+    DBHelper dbHelper;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dbHelper = new DBHelper(this);
+        database = dbHelper.getWritableDatabase();
+
+        listItems = new ArrayList<>();
+        Cursor cursor = database.query(DBHelper.TABLE_ALBUMS, null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            int idIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int nameIndex = cursor.getColumnIndex(DBHelper.KEY_NAME);
+            int labelIndex = cursor.getColumnIndex(DBHelper.KEY_LABEL);
+            int yearIndex = cursor.getColumnIndex(DBHelper.KEY_YEAR);
+            int uriIndex = cursor.getColumnIndex(DBHelper.KEY_URI);
+            do {
+                listItems.add(new RecyclerItem(cursor.getString(nameIndex), cursor.getString(labelIndex), cursor.getString(yearIndex), cursor.getString(uriIndex)));
+                Log.d("mLog", "ID = " + cursor.getInt(idIndex) +
+                        ", name = " + cursor.getString(nameIndex) +
+                        ", label = " + cursor.getString(labelIndex) + ", year " + cursor.getString(yearIndex) + ", uri " + cursor.getString(uriIndex));
+            } while (cursor.moveToNext());
+        } else
+            Log.d("mLog", "0 rows");
+
+        cursor.close();
+
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        listItems = new ArrayList<>();
-        Drawable image1 = getDrawable(R.drawable.nirvana_nevermind);
-        Bitmap bit1 = ((BitmapDrawable) image1).getBitmap();
-        listItems.add(new RecyclerItem("Nevermind", "Nirvana", "1991", bit1));
-
+        if (listItems.isEmpty()) {
+            Drawable image1 = getDrawable(R.drawable.nirvana_nevermind);
+            Bitmap bit1 = ((BitmapDrawable) image1).getBitmap();
+            listItems.add(new RecyclerItem("Nevermind", "Nirvana", "1991", bit1));
+        }
         adapter = new ListAdapter(listItems, this);
         recyclerView.setAdapter(adapter);
+
     }
 
     @Override
@@ -44,36 +72,28 @@ public class AlbumCollectionActivity extends AppCompatActivity {
         adapter.onActivityResult(requestCode, resultCode, data);
     }
 
+
     @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
+    public void onStop() {
+        database = dbHelper.getWritableDatabase();
+        database.delete(DBHelper.TABLE_ALBUMS, null, null);
+
         int counter = 0;
         for (RecyclerItem item :
                 listItems) {
             if (item.getUri() != null) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(DBHelper.KEY_NAME, item.getTitle());
+                contentValues.put(DBHelper.KEY_ID, Integer.toString(counter));
+                contentValues.put(DBHelper.KEY_LABEL, item.getDescription());
+                contentValues.put(DBHelper.KEY_YEAR, item.getYear());
+                contentValues.put(DBHelper.KEY_URI, item.getStringUri());
+                database.insert(DBHelper.TABLE_ALBUMS, null, contentValues);
                 counter++;
-                String key = "object" + counter;
-                savedInstanceState.putSerializable(key, item);
-
-            }
-
-        }
-        savedInstanceState.putInt("counter", counter);
-
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        int counter = savedInstanceState.getInt("counter");
-        for (int i = 1; i <= counter; i++) {
-            String key = "object" + i;
-            RecyclerItem item = (RecyclerItem) savedInstanceState.getSerializable(key);
-            if (item != null) {
-                item.setUri(item.getStringUri());
-                listItems.add(item);
             }
         }
 
+        dbHelper.close();
+        super.onStop();
     }
 }

@@ -2,7 +2,6 @@ package com.example.musiccatalog;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
-
 import java.io.Serializable;
 
 public class RecyclerItem implements Serializable {
@@ -26,11 +25,10 @@ public class RecyclerItem implements Serializable {
         this.title = title;
     }
 
-    public RecyclerItem(String title, String description, String year, Bitmap img, String uri) {
+    public RecyclerItem(String title, String description, String year, String uri) {
         this.title = title;
         this.description = description;
         this.year = year;
-        this.img = img;
         this.uri = Uri.parse(uri);
         this.stringUri = uri;
     }

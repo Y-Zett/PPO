@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
@@ -29,7 +31,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
     static final int GALLERY_REQUEST = 1;
     static final int GET_DATA_SET = 2;
     static final int EDIT_DATA_SET = 3;
-    public int index = 0;
+    public int index = -1;
     Bitmap bitmap = null;
     Uri selectedImage = Uri.parse("");
     Activity origin;
@@ -59,13 +61,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         holder.txtYear.setText(itemList.getYear());
         holder.imageView.setLongClickable(true);
         holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public boolean onLongClick(View v) {
                 origin = (Activity) mContext;
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                Intent photoPickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 photoPickerIntent.setType("image/*");
-                origin.startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
                 index = position;
+                origin.startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
                 return true;
             }
         });
@@ -85,7 +88,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
                                 Intent dataIntent = new Intent(origin, AddItemActivity.class);
                                 origin.startActivityForResult(dataIntent, GET_DATA_SET);
 
-                                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                                Intent photoPickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                                 photoPickerIntent.setType("image/*");
                                 origin.startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
                                 break;
@@ -129,7 +132,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    if (index != 0) {
+                    if (index != -1) {
                         listItems.get(index).setImg(bitmap);
                         listItems.get(index).setUri(selectedImage.toString());
                         listItems.get(index).setStringUri(selectedImage.toString());
@@ -162,7 +165,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
                     if (bundle != null) {
                         RecyclerItem item = (RecyclerItem) bundle.getSerializable("item");
                         listItems.get(index).setData(item.getTitle(), item.getDescription(), item.getYear());
-                        index = 0;
+                        index = -1;
                         notifyDataSetChanged();
                     }
                 } catch (RuntimeException ex) {
